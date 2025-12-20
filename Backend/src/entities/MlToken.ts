@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from './User';
 
 @Entity('ml_tokens')
 export class MlToken {
@@ -17,8 +18,9 @@ export class MlToken {
   @Column({ type: 'varchar', length: 255 })
   sellerId: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  user: string;
+  @ManyToOne(() => User, (user) => user.mlTokens)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

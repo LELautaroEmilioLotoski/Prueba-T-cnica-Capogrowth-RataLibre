@@ -1,6 +1,6 @@
 import { MlTokenResponse } from "../interfaces/ITokenResponse";
 
-const mlAuthLoginService = () => {
+export const mlAuthLoginService = () => {
     const url =
     `https://auth.mercadolibre.com.ar/authorization` +
     `?response_type=code` +
@@ -9,8 +9,6 @@ const mlAuthLoginService = () => {
 
     return url;
 }
-
-export default mlAuthLoginService
 
 export const exchangeCodeForToken = async (
     code: string
@@ -34,4 +32,3 @@ export const exchangeCodeForToken = async (
   
     return (await response.json()) as MlTokenResponse;
   };
-  

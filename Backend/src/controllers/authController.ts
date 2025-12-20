@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import authLoginService, { exchangeCodeForToken } from "../services/authService";
+import{ mlAuthLoginService, exchangeCodeForToken } from "../services/authService";
 import { MlTokenResponse } from "../interfaces/ITokenResponse";
 
 export const mlAuthLoginController = async(req: Request, res: Response) => {
     
     try {
-        const redirectUri = await authLoginService()
+        const redirectUri = await mlAuthLoginService()
 
         console.log("URL OAuth ML =>", redirectUri);
 
@@ -36,11 +36,13 @@ export const mlCallback = async (req: Request, res: Response) => {
       // - guardar tokenData en DB
       // - asociarlo al user/seller
       console.log(`LA DATA OBTENIDA ES: ${tokenData.access_token}`);
-        
+    
+
       const data = res.json({
         message: "Callback OK",
         tokenData,
       });
+
 
 
       
