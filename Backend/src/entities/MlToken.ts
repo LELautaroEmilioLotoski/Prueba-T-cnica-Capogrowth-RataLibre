@@ -1,31 +1,42 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from './User';
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    JoinColumn,
+    Index,
+    OneToOne,
+  } from 'typeorm';
+  import { User } from './User';
 
-@Entity('ml_tokens')
-export class MlToken {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
 
-  @Column({ type: 'text' })
-  accessToken: string;
-
-  @Column({ type: 'text' })
-  refreshToken: string;
-
-  @Column({ type: 'int' })
-  expiresIn: number;
-
-  @Column({ type: 'varchar', length: 255 })
-  sellerId: string;
-
-  @ManyToOne(() => User, (user) => user.mlTokens)
-  @JoinColumn({ name: 'userId' })
-  user: User;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updateAt: Date;
-}
-
+  @Entity('ml_tokens')
+  @Index(['user'], { unique: true })
+  export class MlToken {
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+  
+    @Column({ type: 'text' })
+    accessToken: string;
+  
+    @Column({ type: 'text' })
+    refreshToken: string;
+  
+    @Column({ type: 'int' })
+    expiresIn: number;
+  
+    @OneToOne(() => User, (user) => user.mlToken, {
+      onDelete: 'CASCADE',
+      nullable: false,
+    })
+    @JoinColumn({ name: 'userId' })
+    user: User;
+  
+    @CreateDateColumn()
+    createdAt: Date;
+  
+    @UpdateDateColumn()
+    updatedAt: Date;
+  }
+  

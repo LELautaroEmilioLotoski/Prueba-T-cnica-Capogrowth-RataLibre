@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import{ mlAuthLoginService, exchangeCodeForToken } from "../services/authService";
+import{ mlAuthLoginService, exchangeCodeForToken, saveTokenInBdd } from "../services/authService";
 import { MlTokenResponse } from "../interfaces/ITokenResponse";
 
 export const mlAuthLoginController = async(req: Request, res: Response) => {
@@ -31,21 +31,18 @@ export const mlCallback = async (req: Request, res: Response) => {
   
     try {
       const tokenData: MlTokenResponse = await exchangeCodeForToken(code);
-  
-      // más adelante:
-      // - guardar tokenData en DB
-      // - asociarlo al user/seller
-      console.log(`LA DATA OBTENIDA ES: ${tokenData.access_token}`);
-    
+      
+      console.log(`EL TOKEN OBTENIDO ES: ${tokenData.access_token}`);
+      console.log(`EL USER_ID OBTENIDO ES: ${tokenData.user_id}`);
+
+      if (tokenData.access_token != undefined){
+        await saveTokenInBdd(tokenData, tokenData.user_id)
+      }
 
       const data = res.json({
         message: "Callback OK",
         tokenData,
       });
-
-
-
-      
 
       return data
     } catch (error) {
