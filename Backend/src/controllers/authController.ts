@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import authLoginService, { exchangeCodeForToken } from "../services/authService";
+import{ mlAuthLoginService, exchangeCodeForToken, saveTokenInBdd } from "../services/authService";
 import { MlTokenResponse } from "../interfaces/ITokenResponse";
 
 export const mlAuthLoginController = async(req: Request, res: Response) => {
     
     try {
-        const redirectUri = await authLoginService()
-
-        console.log("URL OAuth ML =>", redirectUri);
-
+        const redirectUri = await mlAuthLoginService()
+        
         res.redirect(redirectUri);
     } catch (error) {
         console.log("ALGO SALIÓ MAL");
@@ -20,30 +18,24 @@ export const mlAuthLoginController = async(req: Request, res: Response) => {
 
 export const mlCallback = async (req: Request, res: Response) => {
     const { code } = req.query;
-  
+
     if (typeof code !== "string") {
       return res.status(400).json({
         error: "Invalid or missing authorization code",
       });
     }
   
-    console.log("CODE RECIBIDO DE ML:", code);
-  
     try {
       const tokenData: MlTokenResponse = await exchangeCodeForToken(code);
-  
-      // más adelante:
-      // - guardar tokenData en DB
-      // - asociarlo al user/seller
-      console.log(`LA DATA OBTENIDA ES: ${tokenData.access_token}`);
-        
+      
+      if (tokenData.access_token != undefined){
+        await saveTokenInBdd(tokenData, tokenData.user_id)
+      }
+
       const data = res.json({
         message: "Callback OK",
         tokenData,
       });
-
-
-      
 
       return data
     } catch (error) {

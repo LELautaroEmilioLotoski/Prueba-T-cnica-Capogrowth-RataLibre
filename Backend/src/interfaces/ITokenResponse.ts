@@ -3,7 +3,7 @@ export interface MlTokenResponse {
     token_type: string;
     expires_in: number;
     scope: string;
-    user_id: number;
+    user_id: string;
     refresh_token: string;
   }
   
