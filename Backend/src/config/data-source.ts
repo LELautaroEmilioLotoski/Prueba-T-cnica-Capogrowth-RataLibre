@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "../entities/User";
 import { MlToken } from "../entities/MlToken";
+import { Product } from "../entities/Product";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -12,5 +13,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [User, MlToken],
+  entities: [User, MlToken, Product],
 });
